@@ -1,4 +1,4 @@
--- Provides config, CondLog functions
+-- Provides dataConfig, CondLog functions
 require("utils")
 
 -- Technologies for AMS machines are hidden by default
@@ -16,7 +16,7 @@ local function CheckPrerequisites(Technology)
 end
 
 local function on_init()
-    local ShowAMSTech = not settings.global[HideOption].value
+    local ShowAMSTech = not globalConfig(HideOption)
     for _, Force in pairs(game.forces) do
         for _, Technology in pairs(Force.technologies) do
             if Technology.name:match('%-ams$') then
@@ -31,7 +31,7 @@ local function on_configuration_changed(ConfigurationChangedData)
 end
 
 local function on_research_finished(event)
-    local ShowAMSTech = not settings.global[HideOption].value
+    local ShowAMSTech = not globalConfig(HideOption)
 	local Technology = event.research
     for _, Successor in pairs(Technology.successors) do
         if Successor.name:match('%-ams$') then
@@ -42,7 +42,7 @@ end
 
 -- Register event handlers when AMS machines are enabled
 
-if config("ams-machines-toggle") then
+if dataConfig("ams-machines-toggle") then
     script.on_init(on_init)
     script.on_configuration_changed(on_configuration_changed)
     script.on_event(defines.events.on_research_finished, on_research_finished)

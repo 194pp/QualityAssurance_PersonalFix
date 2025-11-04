@@ -1,4 +1,4 @@
--- Provides config, CondLog functions
+-- Provides dataConfig, CondLog functions
 require("utils")
 
 EnableCraftingSpeedFunction = true
@@ -210,13 +210,13 @@ end
 -- Updated by A.Freeman
 
 -- Technology that will unlock qualities
-local QualityTechnologyName = config("quality-unlock")
+local QualityTechnologyName = dataConfig("quality-unlock")
 local QualityTechOrder = Order[QualityTechnologyName]
 -- If not empty, pick a quality with the highest level - all qualities up to that will be unlocked by the abovementioned technology
-local EarlyQualityFilter = Split(config("early-quality-filter"), ",%w*")
+local EarlyQualityFilter = Split(dataConfig("early-quality-filter"), ",%w*")
 local EarlyQualityLevel = 0
 local EarlyQualityName = nil
-CondLog("EarlyQualityFilter string: \"" .. config("early-quality-filter") .. "\" filter: " .. serpent.block(EarlyQualityFilter))
+CondLog("EarlyQualityFilter string: \"" .. dataConfig("early-quality-filter") .. "\" filter: " .. serpent.block(EarlyQualityFilter))
 for i,Name in pairs(EarlyQualityFilter) do
     local name = string.lower(Name)
     if Qualities[name] ~= nil and EarlyQualityLevel < Qualities[name].level then
@@ -360,7 +360,7 @@ end
 
 -- Code to generate relabeler recipes. It'll only work once I can make quality-dependent recipes and results and update the code here.
 -- Then I can enable the relabeler setting in settings.lua to make it work.
-if config("relabeler") then
+if dataConfig("relabeler") then
     -- The relabeler, decreases the quality of an item by 1 tier. Does nothing to normal quality items.
     CondLog("Creating relabeler recipes.")
     local function GetLowerQuality(HigherQuality)
@@ -463,7 +463,7 @@ end
 
 -- Code to generate upcycler recipes. It'll only work once I can make quality-dependent recipes and results and update the code here.
 -- Then I can enable the upcycler setting in settings.lua to make it work.
-if config("upcycler") then
+if dataConfig("upcycler") then
     -- The upcycler, has a chance to increase the quality of an item by 1 tier, as well as chances to leave the item as-is and turn the item into scrap.
     CondLog("Creating upcycler recipes.")
     local function GetHigherQuality(LowerQuality)
@@ -591,12 +591,12 @@ end
 
 local function AddQuality(Machine)
     -- Increase quality for a machine.
-    if not config("base-quality") then
+    if not dataConfig("base-quality") then
         CondLog("Base Quality setting is disabled. Skipping.")
         return Machine
     end
 
-    if not config("moduleless-quality") then
+    if not dataConfig("moduleless-quality") then
         if Machine.module_slots == nil then
             CondLog("Moduleless Quality setting is disabled, and this machine doesn't have module slots. Skipping.")
             return Machine
@@ -615,7 +615,7 @@ local function AddQuality(Machine)
                 if Machine.effect_receiver.base_effect.quality then
                     if Machine.effect_receiver.base_effect.quality == 0 then
                         CondLog("Machine does not contain base quality. Adding base quality.")
-                        Machine.effect_receiver.base_effect.quality = config("base-quality-value") / 100 / NormalProbability
+                        Machine.effect_receiver.base_effect.quality = dataConfig("base-quality-value") / 100 / NormalProbability
                     else
                         CondLog("Machine contains base quality of amount " .. Machine.effect_receiver.base_effect.quality or 0 ..". Skipping.")
                     end
@@ -757,7 +757,7 @@ for _,MachineType in pairs(MachineTypes) do
             CondLog("Scanning Machine \"" .. Machine.name .. "\" now.")
             
             if MachineType ~= "rocket-silo" then
-                if (not config("ams-base-quality-toggle")) and config("enable-base-quality-" .. MachineType) and (not BaseQualityBanned) then
+                if (not dataConfig("ams-base-quality-toggle")) and dataConfig("enable-base-quality-" .. MachineType) and (not BaseQualityBanned) then
                     Machine = AddQuality(Machine)
                 end
                 Machine = EnableQuality(Machine)
@@ -769,12 +769,12 @@ for _,MachineType in pairs(MachineTypes) do
             data.raw[MachineType][j] = Machine
 
             -- Create a new version of all machines which don't have additional module slots.
-            if ( not string.find(Machine.name, "qa_") ) and config("ams-machines-toggle") and ( not AMSBanned ) and (config("enable-ams-" .. MachineType)) then
+            if ( not string.find(Machine.name, "qa_") ) and dataConfig("ams-machines-toggle") and ( not AMSBanned ) and (dataConfig("enable-ams-" .. MachineType)) then
                 CondLog("Creating AMS version of \"" .. Machine.name .. "\" now.")
                 local AMSMachine = table.deepcopy(Machine)
                 AMSMachine.name = "qa_" .. AMSMachine.name .. "-ams"
 
-                if config("ams-base-quality-toggle") then
+                if dataConfig("ams-base-quality-toggle") then
                     AMSMachine = AddQuality(AMSMachine)
                 end
 
@@ -782,7 +782,7 @@ for _,MachineType in pairs(MachineTypes) do
                     AMSMachine.module_slots = 0
                 end
 
-                local AddedModuleSlots = config("added-module-slots")
+                local AddedModuleSlots = dataConfig("added-module-slots")
                 local SpeedMultiplier = 1
 
                 local RemovingSlots = false
@@ -944,7 +944,7 @@ for _,MachineType in pairs(MachineTypes) do
 end
 
 -- Allow Quality Modules in Beacons.
-if config("quality-beacons") then
+if dataConfig("quality-beacons") then
     for _,Beacon in pairs(data.raw["beacon"]) do
         Beacon = EnableQuality(Beacon)
     end
@@ -957,7 +957,7 @@ for _,Module in pairs(data.raw["module"]) do
     if Module.effect.quality then
         if Module.effect.quality >= 0 then
             CondLog("Module \"" .. Module.name .. "\" contians a Quality increase. Increasing bonus.")
-            Module.effect.quality = Module.effect.quality * config("quality-module-multiplier")
+            Module.effect.quality = Module.effect.quality * dataConfig("quality-module-multiplier")
         end
     end
 end

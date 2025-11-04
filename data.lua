@@ -1,10 +1,10 @@
--- Provides config, CondLog functions
+-- Provides dataConfig, CondLog functions
 require("utils")
 
 -- Will not work until I can make recipe ingredients and results depend on quality.
 -- Otherwise, there will be duplicate recipes with the same ingredients, which will cause a crash due to the furnace-like nature of the relabeler.
 -- Once that's possible, I can update the code in data-updates.lua to fix that issue, then go to settings.lua and enable the relabeler setting.
-if config("relabeler") then
+if dataConfig("relabeler") then
     -- The relabeler, decreases the quality of an item by 1 tier. Does nothing to normal quality items.
     CondLog("Creating machine \"qa_relabeler\"")
     local RelabelingCategory = {}
@@ -49,7 +49,7 @@ end
 -- Will not work until I can make recipe ingredients and results depend on quality.
 -- Otherwise, there will be duplicate recipes with the same ingredients, which will cause a crash due to the furnace-like nature of the upcycler.
 -- Once that's possible, I can update the code in data-updates.lua to fix that issue, then go to settings.lua and enable the upcycler setting.
-if config("upcycler") then
+if dataConfig("upcycler") then
     -- The upcycler, has a chance to increase the quality of an item by 1 tier, as well as chances to leave the item as-is and turn the item into scrap.
     CondLog("Creating machine \"qa_upcycler\"")
     local UpcyclingCategory = {}
@@ -84,7 +84,7 @@ if config("upcycler") then
     local UpcyclerTechnology = table.deepcopy(data.raw["technology"]["recycling"])
     UpcyclerTechnology.name = UpcyclerRecipe.name
     UpcyclerTechnology.prerequisites = {"quality-module", "electronics", "advanced-circuit", "automation-3"}
-    if config("relabeler") then
+    if dataConfig("relabeler") then
         table.insert(UpcyclerTechnology.prerequisites, "qa_relabeler")
     end
     UpcyclerTechnology.effects = {{type = "unlock-recipe", recipe = UpcyclerRecipe.name}}

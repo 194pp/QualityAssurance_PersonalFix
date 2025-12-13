@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.4
+Date: 13/12/2025
+  Bugfixes:
+    - Added the Mining Depot to the AMS blocklist to prevent an infinite resources glitch.
+      Shoutout to Syn_ and Akeras for both independently reporting this issue to me.
+---------------------------------------------------------------------------------------------------
 Version: 1.4.3
 Date: 04/11/2025
   Changes:
@@ -215,3 +221,4 @@ Version: 1.0.0
 Date: 30/10/2024
   Major Features:
     - Initial Release.
+

@@ -1,9 +1,10 @@
 {
     "name": "QualityAssurance",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "title": "Quality Assurance",
     "author": "BCC",
     "factorio_version": "2.0",
     "dependencies": ["base >= 2.0", "quality >= 2.0", "(?) space-age >= 2.0"],
     "description": "All Qualities, unlocked from the start! Quality Modules not included."
 }
+

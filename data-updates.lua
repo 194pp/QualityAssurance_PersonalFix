@@ -4,7 +4,7 @@ require("utils")
 EnableCraftingSpeedFunction = true
 
 -- A list of entity names to be skipped over when creating AMS machines.
-local AMSBlocklist = {"awesome-sink-gui", "oil_rig_migration", "elevated-pipe", "yir_factory_stuff", "yir_diesel_monument", "yir_future_monument", "energy-void", "passive-energy-void", "fluid-source"}
+local AMSBlocklist = {"awesome-sink-gui", "oil_rig_migration", "elevated-pipe", "yir_factory_stuff", "yir_diesel_monument", "yir_future_monument", "energy-void", "passive-energy-void", "fluid-source", "mining-depot"}
 
 -- A list of entity names to be skipped over when modifying the fixed_recipe and fixed_quality properties.
 local UnfixedRSRBlocklist = {"planet-hopper-launcher"}
@@ -961,3 +961,4 @@ for _,Module in pairs(data.raw["module"]) do
         end
     end
 end
+

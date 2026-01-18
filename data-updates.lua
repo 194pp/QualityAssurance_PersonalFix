@@ -175,6 +175,9 @@ function UpdateOrder(Tech)
         Technology = Technologies[Tech]
         Name = Tech
     end
+    if not Order[Name] then
+        Order[Name] = 0
+    end
     if Order[Name] > 0 or (Technology and Empty(Technology.prerequisites)) then
         -- Order was initialized
         return Order[Name]

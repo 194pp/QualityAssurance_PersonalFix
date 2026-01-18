@@ -152,7 +152,11 @@ end
 for i,Technology in pairs(Technologies) do
     if type(Technology) == "table" and type(Technology.prerequisites) == "table" then
         for _,Prerequisite in pairs(Technology.prerequisites) do
-            table.insert(Prerequisites[Prerequisite], Technology.name)
+            if Prerequisites[Prerequisite] then
+                table.insert(Prerequisites[Prerequisite], Technology.name)
+            else
+                CondLog("Technology " .. Technology.name .. " has non-existent prerequisite: " .. Prerequisite)
+            end
         end
     end
 end
@@ -171,12 +175,17 @@ function UpdateOrder(Tech)
         Technology = Technologies[Tech]
         Name = Tech
     end
-    if Order[Name] > 0 or Empty(Technology.prerequisites) then
+    if Order[Name] > 0 or (Technology and Empty(Technology.prerequisites)) then
         -- Order was initialized
         return Order[Name]
     end
     if Order[Name] == -1 then
         CondLog("Found dependency cycle for tech " .. Name)
+        return 0
+    end
+    if not Technology then
+        CondLog("Technology " .. Name .. " not found while updating order.")
+        Order[Name] = 0
         return 0
     end
     if type(Technology.prerequisites) == "table" then
@@ -211,7 +220,12 @@ end
 
 -- Technology that will unlock qualities
 local QualityTechnologyName = dataConfig("quality-unlock")
-local QualityTechOrder = Order[QualityTechnologyName]
+local QualityTechOrder = 0
+if Order[QualityTechnologyName] then
+    QualityTechOrder = Order[QualityTechnologyName]
+else
+    CondLog("Quality unlock technology \"" .. QualityTechnologyName .. "\" not found.")
+end
 -- If not empty, pick a quality with the highest level - all qualities up to that will be unlocked by the abovementioned technology
 local EarlyQualityFilter = Split(dataConfig("early-quality-filter"), ",%w*")
 local EarlyQualityLevel = 0
@@ -242,14 +256,14 @@ function MoveQualities(Technology)
         -- Quality Technology order is lower than the current technology's 
         -- Check if the current quality level is <= EarlyQualityLevel
         if Effect.type == "unlock-quality" then
-            if QualityTechOrder <= TechOrder and Qualities[Effect.quality].level <= EarlyQualityLevel then
+            if Technologies[QualityTechnologyName] and QualityTechOrder <= TechOrder and Qualities[Effect.quality].level <= EarlyQualityLevel then
                 table.insert(Technologies[QualityTechnologyName].effects, Effect)
                 Technology.effects[j] = nil
                 Moved = true
                 CondLog("Moved quality \"" .. Effect.quality .. "\" to Technology \"" .. QualityTechnologyName .. "\"")
             else
                 local Values = table.concat({tostring(QualityTechOrder), tostring(TechOrder), tostring(Qualities[Effect.quality].level), tostring(EarlyQualityLevel)}, " ")
-                if QualityTechOrder <= TechOrder and Qualities[EarlyQualityName] and Qualities[EarlyQualityName].next == Effect.quality then
+                if Technologies[QualityTechnologyName] and QualityTechOrder <= TechOrder and Qualities[EarlyQualityName] and Qualities[EarlyQualityName].next == Effect.quality then
                     -- QualityTechnology unlocks all qualities up to EarlyQuality 
                     -- But Technology unlocks the next quality of EarlyQuality 
                     -- So add QualityTechnology as prerequisite to Technology
@@ -261,7 +275,9 @@ function MoveQualities(Technology)
                     end
                     if not Contains then
                         table.insert(Technology.prerequisites, QualityTechnologyName)
-                        table.insert(Prerequisites[QualityTechnologyName], Technology.name)
+                        if Prerequisites[QualityTechnologyName] then
+                            table.insert(Prerequisites[QualityTechnologyName], Technology.name)
+                        end
                         CondLog("Skipped quality \"" .. Effect.quality .. "\" with order/level values: " .. Values)
                         CondLog("Added prerequisite \"" .. QualityTechnologyName .. "\" to Technology \"" .. Technology.name .. "\"")
                     end

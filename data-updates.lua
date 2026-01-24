@@ -894,23 +894,25 @@ for _,MachineType in pairs(MachineTypes) do
                 AMSMachineTechnology.name = AMSMachine.name
                 -- Thank you, A.Freeman (from the mod portal) for providing me this new prerequisites system. (If I ever add a supporters list, you'll be on it!)
                 local Prerequisite = GetMachineTechnology(Machine)
+                local AMSPrerequisiteTechs = {"steel-processing", "electronics"}
                 if Prerequisite then
+                    -- Check if the prerequisite is one of the defaults
                     if Prerequisite ~= "steel-processing" and Prerequisite ~= "electronics" then
-                        AMSMachineTechnology.prerequisites = {Prerequisite, "steel-processing", "electronics"}
-                    elseif Prerequisite == "steel-processing" and Prerequisite ~= "electronics" then
-                        AMSMachineTechnology.prerequisites = {Prerequisite, "electronics"}
-                    elseif Prerequisite ~= "steel-processing" and Prerequisite == "electronics" then
-                        AMSMachineTechnology.prerequisites = {Prerequisite, "steel-processing"}
-                    else
-                        AMSMachineTechnology.prerequisites = {Prerequisite}
+                        table.insert(AMSMachineTechnology.prerequisites, Prerequisite)
                     end
+
+                    -- Get the tech corrosponding to the prerequisite
                     PrerequisiteTech = data.raw["technology"][Prerequisite]
+
+                    -- Copy prerequisite icon
                     if PrerequisiteTech.icon and PrerequisiteTech.icon ~= "" then
                         AMSMachineTechnology.icon = PrerequisiteTech.icon
                         AMSMachineTechnology.icon_size = PrerequisiteTech.icon_size
                     elseif PrerequisiteTech.icons and PrerequisiteTech.icons ~= {} then
                         AMSMachineTechnology.icons = PrerequisiteTech.icons
                     end
+
+                    -- Copy prerequisite unit/research trigger
                     if PrerequisiteTech.unit then
                         AMSMachineTechnology.unit = table.deepcopy(PrerequisiteTech.unit)
                         if AMSMachineTechnology.unit.count then
@@ -924,10 +926,15 @@ for _,MachineType in pairs(MachineTypes) do
                         AMSMachineTechnology.unit = nil
                     end
                 else
-                    AMSMachineTechnology.prerequisites = {"steel-processing", "electronics"}
                     AMSMachineTechnology.research_trigger = {type = "build-entity", entity = {name = Machine.name}}
                     AMSMachineTechnology.unit = nil
                 end
+
+                if dataConfig("ams-machines-unlock") ~= "none" then
+                    table.insert(AMSPrerequisiteTechs, dataConfig("ams-machines-unlock"))
+                end
+
+                AMSMachineTechnology.prerequisites = AMSPrerequisiteTechs
                 AMSMachineTechnology.effects = {{type = "unlock-recipe", recipe = AMSMachineRecipe.name}}
                 AMSMachineTechnology = Localiser(AMSMachineTechnology, Machine, RemovingSlots)
 

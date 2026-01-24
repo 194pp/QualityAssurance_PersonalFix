@@ -59,18 +59,36 @@ data:extend{
         default_value = true,
         order = "ca"
     },
+    -- When to unlock AMS machines
+    {
+        name = "qa_ams-machines-unlock",
+        type = "string-setting",
+        setting_type = "startup",
+        default_value = "modules",
+        order = "caa",
+        allowed_values = {
+            "none",
+            "automation",
+            "automation-2",
+            "modules",
+            "quality-module",
+            "rocket-silo",
+            "quality-module-2",
+            "quality-module-3"
+        }
+    },
     -- Hide technologies that unlock AMS machines until all prerequisites are researched
     {
         name = "qa_hide-ams-technologies",
         type = "bool-setting",
         setting_type = "runtime-global",
         default_value = true,
-        order = "caa"
+        order = "cb"
     },
     -- How many module slots are added in AMS machines
-    --  option with order cb
+    --  option with order cc, see below
     -- Enable AMS machines for specific types
-    --  options with orders cc*
+    --  options with orders cd*, see below
 
     -- Base quality section
     -- Enable base quality
@@ -130,7 +148,7 @@ if EnableCraftingSpeedFunction then
             default_value = 2,
             minimum_value = -10,
             maximum_value = 10,
-            order = "cb"
+            order = "cc"
         }
     }
 else
@@ -141,7 +159,7 @@ else
             setting_type = "startup",
             default_value = 2,
             allowed_values = {2},
-            order = "cb",
+            order = "cc",
             hidden = true
         }
     }
@@ -155,7 +173,7 @@ for _,MachineType in pairs(MachineTypes) do
             type = "bool-setting",
             setting_type = "startup",
             default_value = true,
-            order = "cc[" .. MachineType .. "]"
+            order = "cd[" .. MachineType .. "]"
         },
         -- Which types of machines will be affected by base quality
         {

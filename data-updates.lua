@@ -17,51 +17,40 @@ function GetCraftingSpeedMultiplier(ModuleSlotDifference)
     return math.ceil(math.pow(0.8, ModuleSlotDifference / 2) * 100) / 100
 end
 
+-- Thank you, A.Freeman (from the mod portal) for providing me with this now updated localisation system.
+-- The function part was my idea though and I've collapsed most of the indentation.
 local function Localiser(AMS, Machine, removedSlots)
-    -- Thank you, A.Freeman (from the mod portal) for providing me with this new localisation system. The function part was my idea though. (If I ever add a supporters list, you'll be on it!)
-    if not removedSlots then
-        -- AMS locales.
-        if AMS.type == "technology" then
-            if Machine.localised_name and not Machine.localised_name == {} and not Machine.localised_name == "" then
-                AMS.localised_name = {"ams.tech-name", {Machine.localised_name}}
-                AMS.localised_description = {"ams.tech-description", {Machine.localised_name}}
-            else
-                AMS.localised_name = {"ams.tech-name", {"entity-name."..Machine.name}}
-                AMS.localised_description = {"ams.tech-description", {"entity-name."..Machine.name}}
-            end
-        else
-            if Machine.localised_name and not Machine.localised_name == {} and not Machine.localised_name == "" then
-                AMS.localised_name = {"ams.name", {Machine.localised_name}}
-                AMS.localised_description = {"ams.description", {Machine.localised_name}}
-            else
-                AMS.localised_name = {"ams.name", {"entity-name."..Machine.name}}
-                AMS.localised_description = {"ams.description", {"entity-name."..Machine.name}}
-            end
-        end
+    local LocalisationKey = ""
+    local LocalisationParameter = {}
+    -- RMS vs AMS distinction
+    if removedSlots then
+        LocalisationKey = LocalisationKey .. "rms."
     else
-        -- RMS locales.
-        if AMS.type == "technology" then
-            if Machine.localised_name and not Machine.localised_name == {} and not Machine.localised_name == "" then
-                AMS.localised_name = {"rms.tech-name", {Machine.localised_name}}
-                AMS.localised_description = {"rms.tech-description", {Machine.localised_name}}
-            else
-                AMS.localised_name = {"rms.tech-name", {"entity-name."..Machine.name}}
-                AMS.localised_description = {"rms.tech-description", {"entity-name."..Machine.name}}
-            end
-        else
-            if Machine.localised_name and not Machine.localised_name == {} and not Machine.localised_name == "" then
-                AMS.localised_name = {"rms.name", {Machine.localised_name}}
-                AMS.localised_description = {"rms.description", {Machine.localised_name}}
-            else
-                AMS.localised_name = {"rms.name", {"entity-name."..Machine.name}}
-                AMS.localised_description = {"rms.description", {"entity-name."..Machine.name}}
-            end
-        end
+        LocalisationKey = LocalisationKey .. "ams."
     end
+
+    -- Technology distinction
+    if AMS.type == "technology" then
+        LocalisationKey = LocalisationKey .. "tech-"
+    else
+        LocalisationKey = LocalisationKey .. ""
+    end
+
+    -- Localised name vs no localised name distinction
+    if Machine.localised_name and not Machine.localised_name == {} and not Machine.localised_name == "" then
+        LocalisationParameter.insert(Machine.localised_name)
+    else
+        LocalisationParameter.insert("entity-name."..Machine.name)
+    end
+
+    -- Actually add the localisation
+    AMS.localised_name = {LocalisationKey .. "name", LocalisationParameter}
+    AMS.localised_description = {LocalisationKey .. "description", LocalisationParameter}
+    
     return AMS
 end
 
--- Thank you, A.Freeman (from the mod portal) for providing me with this new prerequisites system. (If I ever add a supporters list, you'll be on it!)
+-- Thank you, A.Freeman (from the mod portal) for providing me with this new prerequisites system. 
 local function GetMachineTechnology(Machine)
     for i,Technology in pairs(data.raw["technology"]) do
         if Technology.effects then
@@ -206,7 +195,7 @@ for Name,Val in pairs(Order) do
 end
 
 -- Add all qualities to the selected Technology, and remove quality technologies with no effect.
--- Thank you, wvlad for providing me with this new effect movement and technology removal system. (If I ever add a supporters list, you'll be on it!)
+-- Thank you, wvlad for providing me with this new effect movement and technology removal system. 
 -- Updated by A.Freeman
 
 -- Technology that will unlock qualities
@@ -892,7 +881,7 @@ for _,MachineType in pairs(MachineTypes) do
                 
                 local AMSMachineTechnology = table.deepcopy(data.raw["technology"]["automation-2"])
                 AMSMachineTechnology.name = AMSMachine.name
-                -- Thank you, A.Freeman (from the mod portal) for providing me this new prerequisites system. (If I ever add a supporters list, you'll be on it!)
+                -- Thank you, A.Freeman (from the mod portal) for providing me this new prerequisites system. 
                 local Prerequisite = GetMachineTechnology(Machine)
                 local AMSPrerequisiteTechs = {"steel-processing", "electronics"}
                 if Prerequisite then

@@ -73,6 +73,7 @@ data:extend{
             "modules",
             "quality-module",
             "rocket-silo",
+            "automation-3",
             "quality-module-2",
             "quality-module-3"
         }

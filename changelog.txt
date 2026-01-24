@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.5
+Date: 24/01/2026
+  Changes:
+    - Various internal code changes.
+    - Changed the order of the settings.
+  Features:
+    - You're now able to make AMS machines require a specific other technology to unlock them.
+      By default, this is now set to Modules, but you can change it in the settings and disable it entirely by setting it to None.
+      AMS machines will still require Steel Processing and Electronics, as they did before, in addition to the selected technology.
+  Translation:
+    - Add English localisation for the new setting and the available options.
+---------------------------------------------------------------------------------------------------
 Version: 1.4.4
 Date: 13/12/2025
   Bugfixes:

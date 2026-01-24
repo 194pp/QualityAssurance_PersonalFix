@@ -38,9 +38,9 @@ local function Localiser(AMS, Machine, removedSlots)
 
     -- Localised name vs no localised name distinction
     if Machine.localised_name and not Machine.localised_name == {} and not Machine.localised_name == "" then
-        LocalisationParameter.insert(Machine.localised_name)
+        table.insert(LocalisationParameter, Machine.localised_name)
     else
-        LocalisationParameter.insert("entity-name."..Machine.name)
+        table.insert(LocalisationParameter, "entity-name."..Machine.name)
     end
 
     -- Actually add the localisation

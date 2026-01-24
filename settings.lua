@@ -59,7 +59,7 @@ data:extend{
         default_value = true,
         order = "ca"
     },
-    -- When to unlock AMS machines
+    -- Which technology is required to unlock AMS machines
     {
         name = "qa_ams-machines-unlock",
         type = "string-setting",

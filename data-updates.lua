@@ -137,7 +137,11 @@ for i,Technology in pairs(Technologies) do
 end
 for i,Technology in pairs(Technologies) do
     if type(Technology) == "table" and type(Technology.prerequisites) == "table" then
-        for _,Prerequisite in pairs(Technology.prerequisites) do
+        for j,Prerequisite in pairs(Technology.prerequisites) do
+            -- Sometimes, this issue randomly occurs where Prerequisites[Prerequisite] is nil. I have no idea how it occurs just yet, this is intended to help find out.
+            if Prerequisites[Prerequisite] == nil then
+                error("Cannot find prerequisite " .. Prerequisite .. " of technology " .. Technology.name .. ". This is NOT an issue with QA!")
+            end
             table.insert(Prerequisites[Prerequisite], Technology.name)
         end
     end

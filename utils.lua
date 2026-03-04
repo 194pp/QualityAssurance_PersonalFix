@@ -27,8 +27,14 @@ function playerConfig(name, player)
 end
 
 local EnableLog = dataConfig("dev-mode")
+-- Logs the input string if the dev-mode startup setting is enabled.
 function CondLog(str)
     if EnableLog then
         log(str)
     end
+end
+
+-- Checks if a localised string is nil or empty.
+function Empty(f)
+    return f == nil or not next(f) or f == ""
 end

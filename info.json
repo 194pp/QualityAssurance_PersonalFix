@@ -7,4 +7,3 @@
     "dependencies": ["base >= 2.0", "quality >= 2.0", "(?) space-age >= 2.0"],
     "description": "All Qualities, unlocked from the start! Quality Modules not included."
 }
-
